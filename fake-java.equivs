@@ -1,0 +1,5 @@
+Package: java-runtime
+Version: 21
+Architecture: all
+Description: fake java-runtime package
+ A fake package to avoid dpkg dependency issues.
