@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim-bullseye
+FROM eclipse-temurin:21
 
 ENV OPENFIRE_VERSION=4.8.3 \
     OPENFIRE_USER=openfire \
@@ -6,12 +6,11 @@ ENV OPENFIRE_VERSION=4.8.3 \
     OPENFIRE_LOG_DIR=/var/log/openfire
 
 RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y sudo wget fontconfig libfreetype6 \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y sudo wget fontconfig libfreetype6 adduser \
  && echo "Downloading openfire_${OPENFIRE_VERSION}_all.deb ..." \
  && wget --no-verbose "http://download.igniterealtime.org/openfire/openfire_${OPENFIRE_VERSION}_all.deb" -O /tmp/openfire_${OPENFIRE_VERSION}_all.deb \
  && dpkg -i --force-depends /tmp/openfire_${OPENFIRE_VERSION}_all.deb \
  && mv /var/lib/openfire/plugins/admin /usr/share/openfire/plugin-admin \
- && ln -s /usr/local/openjdk-17/bin/java /usr/bin/java \
  && rm -rf /tmp/openfire_${OPENFIRE_VERSION}_all.deb \
  && rm -rf /var/lib/apt/lists/*
 
