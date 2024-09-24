@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 rewire_openfire() {
   rm -rf /usr/share/openfire/{conf,resources/security,lib/log4j2.xml}
@@ -56,19 +57,20 @@ if [[ ${1:0:1} = '-' ]]; then
   set --
 fi
 
-rewire_openfire
-initialize_data_dir
+#rewire_openfire
+#initialize_data_dir
 initialize_log_dir
 
 # default behaviour is to launch openfire
 if [[ -z ${1} ]]; then
-  exec start-stop-daemon --start --chuid "${OPENFIRE_USER}:${OPENFIRE_USER}" --exec /usr/bin/java -- \
-    -server \
-    -Dlog4j.configurationFile="${OPENFIRE_DATA_DIR}/conf/log4j2.xml" \
-    -DopenfireHome=/usr/share/openfire \
-    -Dopenfire.lib.dir=/usr/share/openfire/lib \
-    -classpath /usr/share/openfire/lib/startup.jar \
-    -jar /usr/share/openfire/lib/startup.jar ${EXTRA_ARGS}
+  OPENFIRE_OPTS=$EXTRA_ARGS su -c 'bash -x /var/lib/openfire/bin/openfire.sh' ${OPENFIRE_USER}
+  # exec start-stop-daemon --start --chuid "${OPENFIRE_USER}:${OPENFIRE_USER}" --exec /usr/bin/java -- \
+  #   -server \
+  #   -Dlog4j.configurationFile="${OPENFIRE_DATA_DIR}/conf/log4j2.xml" \
+  #   -DopenfireHome=/usr/share/openfire \
+  #   -Dopenfire.lib.dir=/usr/share/openfire/lib \
+  #   -classpath /usr/share/openfire/lib/startup.jar \
+  #   -jar /usr/share/openfire/lib/startup.jar ${EXTRA_ARGS}
 else
   exec "$@"
 fi
