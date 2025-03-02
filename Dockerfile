@@ -13,6 +13,7 @@ RUN apt-get update \
  && mv /var/lib/openfire/plugins/admin /usr/share/openfire/plugin-admin \
  && ln -s /usr/local/openjdk-17/bin/java /usr/bin/java \
  && rm -rf /tmp/openfire_${OPENFIRE_VERSION}_all.deb \
+ && sed -i 's/<AppenderRef ref="openfire"\/>/&<AppenderRef ref="console"\/>/g' /usr/share/openfire/conf/log4j2.xml \
  && rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /sbin/entrypoint.sh
